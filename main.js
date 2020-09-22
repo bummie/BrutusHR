@@ -1,11 +1,14 @@
 let express = require("express");
 let handlebars  = require("express-handlebars");
+let dbHandler = require("./scripts/dbhandler");
+
 const WebServerPort = 1337;
+
+dbHandler.AddUser(100000, "Charlotte", "Neal", 27, "Vivti Terrace", "Davicefa", "SD", -80.21522, -54.74312, 30097184856656);
 
 let app = express();
 app.set("view engine", "hbs");
 
-//Sets handlebars configurations (we will go through them later on)
 app.engine("hbs", handlebars(
 {
 	layoutsDir: __dirname + '/views/layouts', 
@@ -16,13 +19,11 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => 
 {
-	//Serves the body of the page aka "main.handlebars" to the container //aka "index.handlebars"
 	res.render('Main', { layout : "Index" });
 });
 
 app.get('/add', (req, res) => 
 {
-	//Serves the body of the page aka "main.handlebars" to the container //aka "index.handlebars"
 	res.render('AddUser', { layout : "Index" });
 });
 
@@ -67,7 +68,6 @@ app.get('/users', (req, res) =>
 		}
 	];
 
-	//Serves the body of the page aka "main.handlebars" to the container //aka "index.handlebars"
 	res.render('ListUsers', { layout : "Index", users: fetchedUsers });
 });
 
