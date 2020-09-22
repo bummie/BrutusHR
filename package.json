@@ -1,0 +1,23 @@
+{
+  "name": "brutushr",
+  "version": "1.0.0",
+  "description": "HR APP",
+  "main": "/src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bummie/BrutusHR.git"
+  },
+  "author": "Sebastian Berge",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bummie/BrutusHR/issues"
+  },
+  "homepage": "https://github.com/bummie/BrutusHR#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.1.0"
+  }
+}

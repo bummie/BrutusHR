@@ -1,0 +1,24 @@
+<table class="u-full-width">
+  <thead>
+    <tr>
+      <th>FirstName</th>
+      <th>LastName</th>
+      <th>Age</th>
+      <th>Address</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+    </tr>
+  </thead>
+      <tbody>
+        {{#each users}}
+            <tr>
+                <td>{{this.FirstName}}</td>
+                <td>{{this.LastName}}</td>
+                <td>{{this.Age}}</td>
+                <td>{{this.Address}}</td>
+                <td>{{this.Lat}}</td>
+                <td>{{this.Lon}}</td>
+            </tr>
+        {{/each}}
+      </tbody>
+</table>
