@@ -1,0 +1,45 @@
+<h3>Search</h3>
+
+<form method="GET" action="/search">
+    <div class="row">
+        <div class="six column">
+            <label for="search">search</label>
+            <input class="u-full-width" type="search" placeholder="Ola.." id="search" name="query">
+        </div>
+    </div>
+    
+    <input class="button-primary" type="submit" value="Search">
+</form>
+
+<table class="u-full-width">
+  <thead>
+    <tr>
+      <th>Sequence</th>
+      <th>FirstName</th>
+      <th>LastName</th>
+      <th>Age</th>
+      <th>Street</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>CCNumber</th>
+    </tr>
+  </thead>
+      <tbody>
+        {{#each users}}
+            <tr>
+                <td>{{this.Seq}}</td>
+                <td>{{this.Firstname}}</td>
+                <td>{{this.Lastname}}</td>
+                <td>{{this.Age}}</td>
+                <td>{{this.Street}}</td>
+                <td>{{this.City}}</td>
+                <td>{{this.State}}</td>
+                <td>{{this.Latitude}}</td>
+                <td>{{this.Longitude}}</td>
+                <td>{{this.CCNumber}}</td>
+            </tr>
+        {{/each}}
+      </tbody>
+</table>

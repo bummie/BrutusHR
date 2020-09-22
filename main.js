@@ -41,8 +41,16 @@ app.get('/users', (req, res) =>
 {
 	dbHandler.GetAllUsers().then(data => 
 	{
-		console.log(data);
 		res.render('ListUsers', { layout : "Index", users: data });
+	});
+});
+
+app.get('/search', (req, res) => 
+{
+	console.log(req.query.query);
+	dbHandler.SearchUsers(req.query.query).then(data => 
+	{
+		res.render('SearchUsers', { layout : "Index", users: data });
 	});
 });
 

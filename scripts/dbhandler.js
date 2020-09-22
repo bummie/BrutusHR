@@ -76,14 +76,39 @@ function commitTransactionCache()
     });
 }
 
+function searchUsers(query)
+{
+    return new Promise( (resolve, reject) => 
+    {
+        if(query == undefined || query == null) { resolve({}); }
+        let searchRegEx = new RegExp(query, "i");
+
+        db.find({ $or: [
+        { Seq: searchRegEx },
+        { Firstname: searchRegEx },
+        { Lastname: searchRegEx },
+        { Age: searchRegEx },
+        { Street: searchRegEx },
+        { City: searchRegEx },
+        { State: searchRegEx },
+        { Latitude: searchRegEx },
+        { Longitude: searchRegEx },
+        { CCNumber: searchRegEx }
+        ]}  , (error, docs) =>
+        {
+            if(error != null){ reject(error); }
+            resolve(docs);
+        });
+    });
+}
+
 function getAllUsers()
 {
     return new Promise( (resolve, reject) => 
     {
-        db.find({}, (error, docs) => 
+        db.find({}).limit(250).exec((error, docs) => 
         {
             if(error != null){ reject(error); }
-
             resolve(docs);
         });
     });
@@ -125,4 +150,5 @@ module.exports =
     AddUser: (postData) => addUser(postData),
     MigrateOldData: () => migrateOldData(),
     GetAllUsers: () => getAllUsers(),
+    SearchUsers: (query) => searchUsers(query),
 };
