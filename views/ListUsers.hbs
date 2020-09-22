@@ -1,23 +1,31 @@
 <table class="u-full-width">
   <thead>
     <tr>
+      <th>Sequence</th>
       <th>FirstName</th>
       <th>LastName</th>
       <th>Age</th>
-      <th>Address</th>
+      <th>Street</th>
+      <th>City</th>
+      <th>State</th>
       <th>Latitude</th>
       <th>Longitude</th>
+      <th>CCNumber</th>
     </tr>
   </thead>
       <tbody>
         {{#each users}}
             <tr>
-                <td>{{this.FirstName}}</td>
-                <td>{{this.LastName}}</td>
+                <td>{{this.Seq}}</td>
+                <td>{{this.Firstname}}</td>
+                <td>{{this.Lastname}}</td>
                 <td>{{this.Age}}</td>
-                <td>{{this.Address}}</td>
-                <td>{{this.Lat}}</td>
-                <td>{{this.Lon}}</td>
+                <td>{{this.Street}}</td>
+                <td>{{this.City}}</td>
+                <td>{{this.State}}</td>
+                <td>{{this.Latitude}}</td>
+                <td>{{this.Longitude}}</td>
+                <td>{{this.CCNumber}}</td>
             </tr>
         {{/each}}
       </tbody>

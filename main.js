@@ -1,6 +1,7 @@
-let express = require("express");
-let handlebars  = require("express-handlebars");
-let dbHandler = require("./scripts/dbhandler");
+const express = require("express");
+const handlebars  = require("express-handlebars");
+const bodyParser = require('body-parser');
+const dbHandler = require("./scripts/dbhandler");
 
 const WebServerPort = 1337;
 
@@ -17,6 +18,7 @@ app.engine("hbs", handlebars(
 }));
 
 app.use(express.static('public'))
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => 
 {
@@ -28,48 +30,20 @@ app.get('/add', (req, res) =>
 	res.render('AddUser', { layout : "Index" });
 });
 
+app.post('/add', (req, res) => 
+{
+	console.log('Got body:', req.body);
+	dbHandler.AddUser(req.body);
+	res.render('AddUser', { layout : "Index" });
+});
+
 app.get('/users', (req, res) => 
 {
-	let fetchedUsers = [ 
-		{
-			//Maggie,Elliott,26,Uvaal Glen,Rikzigdu,HI,-24.72204,83.54313,5133235842426026
-			FirstName: "Ola",
-			LastName: "Ola",
-			Age: 22,
-			Address: "Ola",
-			Lat: 0.0,
-			Lon: 0.0
-		},
-		{
-			//Maggie,Elliott,26,Uvaal Glen,Rikzigdu,HI,-24.72204,83.54313,5133235842426026
-			FirstName: "Ola",
-			LastName: "Ola",
-			Age: 22,
-			Address: "Ola",
-			Lat: 0.0,
-			Lon: 0.0
-		},
-		{
-			//Maggie,Elliott,26,Uvaal Glen,Rikzigdu,HI,-24.72204,83.54313,5133235842426026
-			FirstName: "Ola",
-			LastName: "Ola",
-			Age: 22,
-			Address: "Ola",
-			Lat: 0.0,
-			Lon: 0.0
-		},
-		{
-			//Maggie,Elliott,26,Uvaal Glen,Rikzigdu,HI,-24.72204,83.54313,5133235842426026
-			FirstName: "Ola",
-			LastName: "Ola",
-			Age: 22,
-			Address: "Ola",
-			Lat: 0.0,
-			Lon: 0.0
-		}
-	];
-
-	res.render('ListUsers', { layout : "Index", users: fetchedUsers });
+	dbHandler.GetAllUsers().then(data => 
+	{
+		console.log(data);
+		res.render('ListUsers', { layout : "Index", users: data });
+	});
 });
 
 app.listen(WebServerPort, () => console.log(`Brutus listening on port: ${WebServerPort}`));

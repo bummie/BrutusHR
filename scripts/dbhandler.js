@@ -4,24 +4,32 @@ const csv = require('fast-csv');
 
 const Datastore = require('nedb'), db = new Datastore({ filename: 'datastore/users.db', autoload: true });
 
-const MaxCacheSize = 500;
 let TransactionCache = [];
 
-function addUser(seq, firstname, lastname, age, street, city, state, latitude, longitude, ccnumber)  
+function addUser(postData)  
 {
-    let userDocument = 
-    {
-        "Seq": seq,
-        "Firstname": firstname,
-        "Lastname": lastname,
-        "Age": age,
-        "Street": street,
-        "City": city,
-        "State": state,
-        "Latitude": latitude,
-        "Longitude": longitude,
-        "CCnumber": ccnumber
-    };
+    if(postData == null) { return; }
+    if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); return; }
+    if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); return; }
+    if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); return; }
+    if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); return; }
+    if(postData.city == null || postData.city == "") { console.log("Data missing on insert."); return; }
+    if(postData.state == null || postData.state == "") { console.log("Data missing on insert."); return; }
+    if(postData.latitude == null || postData.latitude == "") { console.log("Data missing on insert."); return; }
+    if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); return; }
+    if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); return; }
+    
+    let userDocument = createUserDocument(-1, 
+                                        postData.firstname,
+                                        postData.lastname,
+                                        postData.age,
+                                        postData.street,
+                                        postData.city,
+                                        postData.state,
+                                        postData.latitude,
+                                        postData.longitude,
+                                        postData.ccnumber);
+
     db.insert(userDocument, (error, newDoc) => 
     {
         if(error != null){ console.log(error); }
@@ -50,7 +58,7 @@ function createUserDocument(seq, firstname, lastname, age, street, city, state, 
         "State": state,
         "Latitude": latitude,
         "Longitude": longitude,
-        "CCnumber": ccnumber
+        "CCNumber": ccnumber
     };
 }
 
@@ -65,6 +73,19 @@ function commitTransactionCache()
             console.log("Cache commited!")
             TransactionCache = [];
         }
+    });
+}
+
+function getAllUsers()
+{
+    return new Promise( (resolve, reject) => 
+    {
+        db.find({}, (error, docs) => 
+        {
+            if(error != null){ reject(error); }
+
+            resolve(docs);
+        });
     });
 }
 
@@ -101,6 +122,7 @@ function addUsersFromCSV(filename)
 
 module.exports = 
 {
-    AddUser: (seq, firstname, lastname, age, street, city, state, latitude, longitude, ccnumber) => addUser(seq, firstname, lastname, age, street, city, state, latitude, longitude, ccnumber),
+    AddUser: (postData) => addUser(postData),
     MigrateOldData: () => migrateOldData(),
+    GetAllUsers: () => getAllUsers(),
 };
