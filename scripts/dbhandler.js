@@ -19,7 +19,18 @@ function addUser(postData)
     if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); return; }
     if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); return; }
     
-    let userDocument = createUserDocument(-1, 
+    let sequenceNumber = -1;
+
+    findHighestSequenceNumber().then((data) => 
+    {
+        if(data != null)
+        {
+            sequenceNumber = parseInt(data[0].Seq) + 2;
+        }
+
+        console.log(sequenceNumber);
+
+        let userDocument = createUserDocument(sequenceNumber.toString(), 
                                         postData.firstname,
                                         postData.lastname,
                                         postData.age,
@@ -30,9 +41,10 @@ function addUser(postData)
                                         postData.longitude,
                                         postData.ccnumber);
 
-    db.insert(userDocument, (error, newDoc) => 
-    {
-        if(error != null){ console.log(error); }
+        db.insert(userDocument, (error, newDoc) => 
+        {
+            if(error != null){ console.log(error); }
+        });
     });
 }
 
@@ -73,6 +85,19 @@ function commitTransactionCache()
             console.log("Cache commited!")
             TransactionCache = [];
         }
+    });
+}
+
+function findHighestSequenceNumber()
+{
+    return new Promise( (resolve, reject) => 
+    {
+        db.find({}).sort({Seq : -1}).limit(1).exec( (error, doc) => 
+        {
+            if(error != null){ reject(error); }
+            console.log(doc);
+            resolve(doc);
+        });
     });
 }
 

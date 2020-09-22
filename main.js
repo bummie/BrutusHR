@@ -5,7 +5,6 @@ const dbHandler = require("./scripts/dbhandler");
 
 const WebServerPort = 1337;
 
-//dbHandler.AddUser(100000, "Charlotte", "Neal", 27, "Vivti Terrace", "Davicefa", "SD", -80.21522, -54.74312, 30097184856656);
 dbHandler.MigrateOldData();
 
 let app = express();
@@ -47,7 +46,6 @@ app.get('/users', (req, res) =>
 
 app.get('/search', (req, res) => 
 {
-	console.log(req.query.query);
 	dbHandler.SearchUsers(req.query.query).then(data => 
 	{
 		res.render('SearchUsers', { layout : "Index", users: data });
