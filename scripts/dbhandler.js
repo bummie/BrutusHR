@@ -3,6 +3,7 @@ const path = require('path');
 const csv = require('fast-csv');
 
 const Datastore = require('nedb'), db = new Datastore({ filename: 'datastore/users.db', autoload: true });
+const UsersPerPage = 100;
 
 let TransactionCache = [];
 
@@ -160,7 +161,7 @@ function getAllUsers()
 {
     return new Promise( (resolve, reject) => 
     {
-        db.find({}).limit(300).exec((error, docs) => 
+        db.find({}).sort({Seq: 1}).limit(300).exec((error, docs) => 
         {
             if(error != null){ reject(error); }
             resolve(docs);
@@ -178,6 +179,28 @@ function migrateOldData()
         if(count > 0) { console.log("Already parsed CSV-file"); return; }
 
         addUsersFromCSV("datasett.csv");
+    });
+}
+
+function getUsersFromPage(page)
+{
+    return getRowAmount().then( count => 
+    {
+        let maxPage = Math.floor(count / UsersPerPage);
+
+        if(page < 0) { page = 0; }
+        if(page > maxPage) { page = maxPage; }
+
+        let skipAmount = page * UsersPerPage;
+
+        return new Promise( (resolve, reject) => 
+        {
+            db.find({}).sort({Seq: 1}).skip(skipAmount).limit(UsersPerPage).exec((error, docs) => 
+            {
+                if(error != null){ reject(error); }
+                resolve({Users: docs, MaxPage: maxPage});
+            });
+        });
     });
 }
 
@@ -213,6 +236,7 @@ module.exports =
     AddUser: (postData) => addUser(postData),
     MigrateOldData: () => migrateOldData(),
     GetAllUsers: () => getAllUsers(),
+    GetUsersFromPage: (page) => getUsersFromPage(page),
     SearchUsers: (query) => searchUsers(query),
     GetRowAmount: () => getRowAmount(),
     GetUserById: (id) => getUserById(id),

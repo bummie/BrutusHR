@@ -56,9 +56,22 @@ app.post('/add', (req, res) =>
 
 app.get('/users', (req, res) => 
 {
-	dbHandler.GetAllUsers().then(data => 
+	let page = 0;
+	if(req.query.page != null) { page = req.query.page; }
+	dbHandler.GetUsersFromPage(page).then(data => 
 	{
-		res.render('ListUsers', { layout : 'Index', users: data });
+		let maxPage = Number(data.MaxPage);
+
+		if(page > maxPage){ page = maxPage; }
+		if(page < 0){ page = 0; }
+		
+		let pageDecrement = Number(page) - 1;
+		let pageIncrement = Number(page) + 1;
+
+		if(pageDecrement < 0){ pageDecrement = 0; }
+		if(pageIncrement > maxPage){ pageIncrement = maxPage; }
+
+		res.render('ListUsers', { layout : 'Index', users: data.Users, pageInc: pageIncrement, pageDec: pageDecrement, MaxPage: maxPage, CurrentPage: page });
 	});
 });
 

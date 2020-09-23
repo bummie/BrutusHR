@@ -1,14 +1,13 @@
 <h3>Statistics</h3>
 
-<h5>Amount of users: {{count}}</h5>
+<h5><b>Amount of users:</b> {{count}}</h5>
 
+<h5>Displaying some of the posistions stored.</h5>
 <div id="mapid"></div>
-
 
 <script src="js/usermap.js"></script>
 
 <script>
-    
     {{#each users}}
         L.marker([{{this.Latitude}}, {{this.Longitude}}]).addTo(userMap);
     {{/each}}

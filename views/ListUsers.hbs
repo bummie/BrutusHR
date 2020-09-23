@@ -1,3 +1,10 @@
+<h5>View all the listings in the database here.</h5>
+
+<p>Page {{CurrentPage}} of {{MaxPage}}</p>
+<a class="button button-primary" href="/users?page=0">First page</a>
+<a class="button button-primary" href="/users?page={{pageDec}}">Previous page</a>
+<a class="button button-primary" href="/users?page={{pageInc}}">Next page</a>
+<a class="button button-primary" href="/users?page={{MaxPage}}">Last page</a>
 <table class="u-full-width sortable">
   <thead>
     <tr>
@@ -27,7 +34,7 @@
                 <td>{{this.Latitude}}</td>
                 <td>{{this.Longitude}}</td>
                 <td>{{this.CCNumber}}</td>
-                <td><a class="button button-primary" href="/user?id={{this._id}}">User</a></td>
+                <td><a class="button button-primary" href="/user?id={{this._id}}">View</a></td>
             </tr>
         {{/each}}
       </tbody>
