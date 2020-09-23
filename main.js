@@ -21,9 +21,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => 
 {
+	res.render('Main', { layout : 'Index'});
+});
+
+app.get('/stats', (req, res) => 
+{
 	dbHandler.GetRowAmount().then(data => 
 	{
-		res.render('Main', { layout : 'Index', stats: data });
+		res.render('Statistics', { layout : 'Index', stats: data });
 	});
 });
 
