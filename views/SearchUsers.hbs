@@ -24,6 +24,7 @@
       <th>Latitude</th>
       <th>Longitude</th>
       <th>CCNumber</th>
+      <th>Userpanel</th>
     </tr>
   </thead>
       <tbody>
@@ -39,6 +40,7 @@
                 <td>{{this.Latitude}}</td>
                 <td>{{this.Longitude}}</td>
                 <td>{{this.CCNumber}}</td>
+				        <td><a class="button button-primary" href="/user?id={{this._id}}">User</a></td>
             </tr>
         {{/each}}
       </tbody>

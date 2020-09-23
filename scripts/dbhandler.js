@@ -8,53 +8,60 @@ let TransactionCache = [];
 
 function addUser(postData)  
 {
-    if(postData == null) { return; }
-    if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); return; }
-    if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); return; }
-    if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); return; }
-    if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); return; }
-    if(postData.city == null || postData.city == "") { console.log("Data missing on insert."); return; }
-    if(postData.state == null || postData.state == "") { console.log("Data missing on insert."); return; }
-    if(postData.latitude == null || postData.latitude == "") { console.log("Data missing on insert."); return; }
-    if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); return; }
-    if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); return; }
-    
-    let sequenceNumber = -1;
-
-    findHighestSequenceNumber().then((data) => 
+    return new Promise( (resolve, reject) => 
     {
-        if(data != null)
+        if(postData == null) { return; }
+        if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); return; }
+        if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); return; }
+        if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); return; }
+        if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); return; }
+        if(postData.city == null || postData.city == "") { console.log("Data missing on insert."); return; }
+        if(postData.state == null || postData.state == "") { console.log("Data missing on insert."); return; }
+        if(postData.latitude == null || postData.latitude == "") { console.log("Data missing on insert."); return; }
+        if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); return; }
+        if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); return; }
+        
+        let sequenceNumber = -1;
+
+        findHighestSequenceNumber().then((data) => 
         {
-            sequenceNumber = parseInt(data[0].Seq) + 2;
-        }
+            if(data != null)
+            {
+                sequenceNumber = parseInt(data[0].Seq) + 2;
+            }
 
-        console.log(sequenceNumber);
+            console.log(sequenceNumber);
 
-        let userDocument = createUserDocument(sequenceNumber.toString(), 
-                                        postData.firstname,
-                                        postData.lastname,
-                                        postData.age,
-                                        postData.street,
-                                        postData.city,
-                                        postData.state,
-                                        postData.latitude,
-                                        postData.longitude,
-                                        postData.ccnumber);
+            let userDocument = createUserDocument(sequenceNumber.toString(), 
+                                            postData.firstname,
+                                            postData.lastname,
+                                            postData.age,
+                                            postData.street,
+                                            postData.city,
+                                            postData.state,
+                                            postData.latitude,
+                                            postData.longitude,
+                                            postData.ccnumber);
 
-        db.insert(userDocument, (error, newDoc) => 
-        {
-            if(error != null){ console.log(error); }
+            db.insert(userDocument, (error, newDoc) => 
+            {
+                if(error != null){ console.log(error); reject(null); }
+                resolve(newDoc);
+            });
         });
     });
+
 }
 
 function getRowAmount()
 {
-    db.count({}, function (err, count) 
+    return new Promise( (resolve, reject) => 
     {
-        console.log(count);
-        if(err == null) { return -1; }
-        else{ return count; }
+        db.count({}, function (error, count) 
+        {
+            if(error != null){ console.log(error); reject(error); }
+            resolve(count);
+        });
     });
 }
 
@@ -101,6 +108,34 @@ function findHighestSequenceNumber()
     });
 }
 
+function getUserById(id)
+{
+    return new Promise( (resolve, reject) => 
+    {        
+        if(id == undefined || id == null) { resolve(null); }
+
+        db.findOne({ _id: id}, (error, doc) =>
+        {
+            if(error != null){ console.log(error); reject(null); }
+            resolve(doc);
+        });
+    });
+}
+
+function getUserBySequence(id)
+{
+    return new Promise( (resolve, reject) => 
+    {
+        if(id == undefined || id == null) { resolve(null); }
+
+        db.findOne({ Seq: id}, (error, doc) =>
+        {
+            if(error != null){ console.log(error); reject(null); }
+            resolve(doc);
+        });
+    });
+}
+
 function searchUsers(query)
 {
     return new Promise( (resolve, reject) => 
@@ -119,7 +154,7 @@ function searchUsers(query)
         { Latitude: searchRegEx },
         { Longitude: searchRegEx },
         { CCNumber: searchRegEx }
-        ]}  , (error, docs) =>
+        ]}, (error, docs) =>
         {
             if(error != null){ reject(error); }
             resolve(docs);
@@ -176,4 +211,7 @@ module.exports =
     MigrateOldData: () => migrateOldData(),
     GetAllUsers: () => getAllUsers(),
     SearchUsers: (query) => searchUsers(query),
+    GetRowAmount: () => getRowAmount(),
+    GetUserById: (id) => getUserById(id),
+    GetUserBySequence: (id) => getUserBySequence(id),
 };
