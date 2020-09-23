@@ -11,7 +11,7 @@ function addUser(postData)
     return new Promise( (resolve, reject) => 
     {
         if(postData == null) { resolve(null); return; }
-        if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); resolve(null); return; return; }
+        if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); resolve(null); return; }
         if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); resolve(null); return; }
         if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); resolve(null); return; }
         if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); resolve(null); return; }
@@ -25,12 +25,9 @@ function addUser(postData)
 
         findHighestSequenceNumber().then((seq) => 
         {
-            if(seq != null)
-            {
-                sequenceNumber = parseInt(seq) + 1;
-            }
-
-            let userDocument = createUserDocument(sequenceNumber.toString(), 
+            if(seq != null) { sequenceNumber = Number(seq) + 1; }
+            
+            let userDocument = createUserDocument(sequenceNumber, 
                                             postData.firstname,
                                             postData.lastname,
                                             postData.age,
@@ -66,16 +63,16 @@ function getRowAmount()
 function createUserDocument(seq, firstname, lastname, age, street, city, state, latitude, longitude, ccnumber)
 {
     return {
-        Seq: seq,
+        Seq: Number(seq),
         Firstname: firstname,
         Lastname: lastname,
-        Age: age,
+        Age: Number(age),
         Street: street,
         City: city,
         State: state,
-        Latitude: latitude,
-        Longitude: longitude,
-        CCNumber: ccnumber
+        Latitude: Number(latitude),
+        Longitude: Number(longitude),
+        CCNumber: Number(ccnumber)
     };
 }
 
@@ -192,7 +189,16 @@ function addUsersFromCSV(filename)
     .on('error', error => console.error(error))
     .on('data', row => 
     {
-       let userDocument = createUserDocument(row["seq"], row["name/first"], row["name/last"], row["age"], row["street"], row["city"], row["state"], row["latitude"], row["longitude"], row["ccnumber"])
+       let userDocument = createUserDocument(Number(row["seq"]),
+                                            row["name/first"], 
+                                            row["name/last"], 
+                                            Number(row["age"]), 
+                                            row["street"], 
+                                            row["city"], 
+                                            row["state"], 
+                                            Number(row["latitude"]), 
+                                            Number(row["longitude"]), 
+                                            Number(row["ccnumber"]));
        TransactionCache.push(userDocument);
     })
     .on('end', rowCount => 
