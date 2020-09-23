@@ -22,7 +22,6 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.1.0",
     "fast-csv": "^4.3.2",
-    "mongodb": "^3.6.2",
     "nedb": "^1.8.0"
   },
   "devDependencies": {
