@@ -2,6 +2,13 @@
 <ul>  
      <li><b>Home:</b> {{user.Street}}, {{user.City}}, {{user.State}}</li>  
      <li><b>CCNumber:</b> {{user.CCNumber}}</li> 
-     <li><b>Position:</b> {{user.Latitude}}, {{user.Longitude
-     }}</li> 
+     <li><b>Position:</b> {{user.Latitude}}, {{user.Longitude}}</li> 
 </ul>  
+
+<div id="mapid"></div>
+
+<script src="js/usermap.js"></script>
+<script>
+    var marker = L.marker([{{user.Latitude}}, {{user.Longitude}}]).addTo(userMap);
+    userMap.setView([{{user.Latitude}}, {{user.Longitude}}], 2);
+</script>

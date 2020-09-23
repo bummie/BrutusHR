@@ -26,9 +26,12 @@ app.get('/', (req, res) =>
 
 app.get('/stats', (req, res) => 
 {
-	dbHandler.GetRowAmount().then(data => 
+	dbHandler.GetRowAmount().then(countData => 
 	{
-		res.render('Statistics', { layout : 'Index', stats: data });
+		dbHandler.GetAllUsers().then(usersData => 
+		{
+			res.render('Statistics', { layout : 'Index', count: countData, users: usersData });
+		});
 	});
 });
 
@@ -41,13 +44,13 @@ app.post('/add', (req, res) =>
 {
 	dbHandler.AddUser(req.body).then(data => 
 	{
-		let messageData = "";
+		let messageData = "Could not add user, data missing!";
 		if(data != null)
 		{
 			messageData = `${data.Firstname} ${data.Lastname} was added to the database!`;
 		}
 
-		res.render('AddUser', { layout : 'Index', message: messageData });
+		res.render('AddUser', { layout : 'Index', message: messageData, user: data });
 	});
 });
 
@@ -71,8 +74,6 @@ app.get('/user', (req, res) =>
 {
 	dbHandler.GetUserById(req.query.id).then(data => 
 	{
-		console.log(req.query.id);
-		console.log(data);
 		if(data == null)
 		{
 			res.render('UserNotFound', { layout : 'Index' });

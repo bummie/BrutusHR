@@ -10,27 +10,25 @@ function addUser(postData)
 {
     return new Promise( (resolve, reject) => 
     {
-        if(postData == null) { return; }
-        if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); return; }
-        if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); return; }
-        if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); return; }
-        if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); return; }
-        if(postData.city == null || postData.city == "") { console.log("Data missing on insert."); return; }
-        if(postData.state == null || postData.state == "") { console.log("Data missing on insert."); return; }
-        if(postData.latitude == null || postData.latitude == "") { console.log("Data missing on insert."); return; }
-        if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); return; }
-        if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); return; }
+        if(postData == null) { resolve(null); return; }
+        if(postData.firstname == null || postData.firstname == "") { console.log("Data missing on insert."); console.log("Data missing on insert."); resolve(null); return; return; }
+        if(postData.lastname == null || postData.lastname == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.age == null || postData.age == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.street == null || postData.street == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.city == null || postData.city == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.state == null || postData.state == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.latitude == null || postData.latitude == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.longitude == null || postData.longitude == "") { console.log("Data missing on insert."); resolve(null); return; }
+        if(postData.ccnumber == null || postData.ccnumber == "") { console.log("Data missing on insert."); resolve(null); return; }
         
         let sequenceNumber = -1;
 
-        findHighestSequenceNumber().then((data) => 
+        findHighestSequenceNumber().then((seq) => 
         {
-            if(data != null)
+            if(seq != null)
             {
-                sequenceNumber = parseInt(data[0].Seq) + 2;
+                sequenceNumber = parseInt(seq) + 1;
             }
-
-            console.log(sequenceNumber);
 
             let userDocument = createUserDocument(sequenceNumber.toString(), 
                                             postData.firstname,
@@ -45,7 +43,7 @@ function addUser(postData)
 
             db.insert(userDocument, (error, newDoc) => 
             {
-                if(error != null){ console.log(error); reject(null); }
+                if(error != null){ console.log(error); resolve(null); }
                 resolve(newDoc);
             });
         });
@@ -68,16 +66,16 @@ function getRowAmount()
 function createUserDocument(seq, firstname, lastname, age, street, city, state, latitude, longitude, ccnumber)
 {
     return {
-        "Seq": seq,
-        "Firstname": firstname,
-        "Lastname": lastname,
-        "Age": age,
-        "Street": street,
-        "City": city,
-        "State": state,
-        "Latitude": latitude,
-        "Longitude": longitude,
-        "CCNumber": ccnumber
+        Seq: seq,
+        Firstname: firstname,
+        Lastname: lastname,
+        Age: age,
+        Street: street,
+        City: city,
+        State: state,
+        Latitude: latitude,
+        Longitude: longitude,
+        CCNumber: ccnumber
     };
 }
 
@@ -99,11 +97,10 @@ function findHighestSequenceNumber()
 {
     return new Promise( (resolve, reject) => 
     {
-        db.find({}).sort({Seq : -1}).limit(1).exec( (error, doc) => 
+        db.findOne({}).sort({Seq: -1}).exec( (error, doc) => 
         {
-            if(error != null){ reject(error); }
-            console.log(doc);
-            resolve(doc);
+            if(error != null){ console.log(error); reject(null); }
+            resolve(doc.Seq);
         });
     });
 }
@@ -166,7 +163,7 @@ function getAllUsers()
 {
     return new Promise( (resolve, reject) => 
     {
-        db.find({}).limit(250).exec((error, docs) => 
+        db.find({}).limit(300).exec((error, docs) => 
         {
             if(error != null){ reject(error); }
             resolve(docs);
